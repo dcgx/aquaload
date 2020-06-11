@@ -1,17 +1,19 @@
-import 'package:waterchapp/src/pages/camion/form_page.dart';
-import 'package:waterchapp/src/pages/observations_page.dart';
 import 'package:flutter/material.dart';
+import 'package:waterchapp/src/pages/camion/form_page.dart';
+import 'package:waterchapp/src/pages/camion/observations_page.dart';
 
 class TabsPage extends StatefulWidget{
+  final String uid, patent, company;
+  TabsPage({Key key, this.uid, this.patent, this.company}) : super  (key: key);
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return TabsPageState();
   }
 }
 
 class TabsPageState extends State<TabsPage>{
   int _currentIndex=0;
+  var user;
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -28,7 +30,7 @@ class TabsPageState extends State<TabsPage>{
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             title: Text('Observaciones')
-          )
+          ),
         ],
         onTap: (index){
           setState(()=>_currentIndex = index);
@@ -42,7 +44,7 @@ class TabsPageState extends State<TabsPage>{
       case 1:
         return ObservationsPage();
         break;
-      default: return FormPage();
+      default: return FormPage(uid: widget.uid, patent: widget.patent, company: widget.company);
     }
   }
 
