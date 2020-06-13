@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-double height(BuildContext context){
+double getHeight(BuildContext context){
     return MediaQuery.of(context).size.height;
 }
-double width(BuildContext context){
+double getWidth(BuildContext context){
   return MediaQuery.of(context).size.width;
 }
 
-String month(int monthNumber){
+String getMonth(int monthNumber){
   switch(monthNumber){
     case 1:
       return 'Enero';
@@ -46,8 +46,4 @@ String month(int monthNumber){
       return 'Diciembre';
       break;
   }
-}
-
-class Camera{
-  
 }

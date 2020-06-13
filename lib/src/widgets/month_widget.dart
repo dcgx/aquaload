@@ -59,8 +59,8 @@ class MonthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width(context)/5,
-      height: height(context)/14,
+      width: getWidth(context)/5,
+      height: getHeight(context)/14,
       child: OutlineButton(
         padding: EdgeInsets.all(15.0),
         child: Text(month, style: TextStyle(fontSize: 15, color: Colors.black, ),

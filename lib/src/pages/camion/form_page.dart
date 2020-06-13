@@ -71,7 +71,7 @@ class _FormPageState extends State<FormPage> {
       return Text("No se ha seleccionado una foto");
     }
     else{
-      return Image.file(photoFile,width: width(context)/2, height: height(context)/2);
+      return Image.file(photoFile,width: getWidth(context)/2, height: getHeight(context)/2);
     }
   }
 
@@ -88,14 +88,13 @@ class _FormPageState extends State<FormPage> {
               child: Column(
                 children: <Widget>[
                   SizedBox(height: 40.0,),
-                  Image(image: AssetImage('assets/images/logo.png',), height: height(context)/14),
+                  Image(image: AssetImage('assets/images/logo.png',), height: getHeight(context)/14),
                   Text(widget.company),
                   Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('Camión patente: ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),),
-                        Text(widget.patent.substring(0,4)+'-'+widget.patent.substring(4,6), style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500)),
+                        Text(widget.patent.substring(0,2)+"•"+widget.patent.substring(2,4)+'-'+widget.patent.substring(4,6), style: TextStyle(fontSize: 42, fontWeight: FontWeight.w500)),
                       ],
                     ),
                   ),
@@ -126,7 +125,6 @@ class _FormPageState extends State<FormPage> {
                       );
                     },
                   ),
-                  Text(formattedDate.toString(), style: Theme.of(context).textTheme.body2,),
                   SizedBox(height: 20.0,),
                   TextFormField(
                     controller: _finalFlowController,
@@ -153,10 +151,8 @@ class _FormPageState extends State<FormPage> {
                         text: _totalLoaded.toStringAsFixed(2)
                       );
                     },
-                  ),
-                  Text(formattedDate.toString(), style: Theme.of(context).textTheme.body2,),
-                  
-                  SizedBox(height: height(context)/200,),
+                  ),                  
+                  SizedBox(height: getHeight(context)/200,),
                   // Upload photo
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -192,13 +188,7 @@ class _FormPageState extends State<FormPage> {
                             child: Text('Borrar', style: TextStyle(color: Colors.black),),
                             color: Colors.grey[300],
                             onPressed: (){
-                              _initialFlowController.clear();
-                              _finalFlowController.clear();
-                              _totalLoadedController.clear();
-                              photoFile=null;
-                              setState(() {
-                                validateImage();
-                              });
+                              _cleanForm();
                             },
                           ),
                         ),
@@ -209,11 +199,10 @@ class _FormPageState extends State<FormPage> {
                               final form = _formKey.currentState;
                               if(form.validate() && photoFile!=null){
                                 form.save();
-                                showSnackBar(message: 'Guardando datos...');
                                 saveToDataBase();
-                                showSnackBar(message: 'Listo!. Datos correctamente guardados');
+                                
                               }else{
-                                showSnackBar(message: 'Por favor, agregar una fotografía');
+                                showSnackBar(message: 'Por favor, agregar una fotografía', seconds: 1);
                               }
                             },
                           ),
@@ -230,11 +219,21 @@ class _FormPageState extends State<FormPage> {
     );
   }
 
-  void showSnackBar({String message}){
+  void _cleanForm(){
+    _initialFlowController.clear();
+    _finalFlowController.clear();
+    _totalLoadedController.clear();
+    photoFile=null;
+    setState(() {
+      validateImage();
+    });
+  }
+
+  void showSnackBar({String message, int seconds}){
     final snackbar = SnackBar(
       content: Text(message),
       backgroundColor: Color(0xFF183863),
-      duration: Duration(seconds: 1),
+      duration: Duration(seconds: seconds),
     );
     _scaffoldKey.currentState.showSnackBar(snackbar);
   }
@@ -254,12 +253,13 @@ class _FormPageState extends State<FormPage> {
           'loaded_by': this.widget.patent
         }
       );
-
+      showSnackBar(message: 'Listo!. Datos correctamente guardados', seconds: 1);
+      _cleanForm();
     }
   }
 
   Future<String> uploadPhoto() async {
-    showSnackBar(message: 'Cargando fotografía...');
+    showSnackBar(message: 'Cargando fotografía...', seconds: 15);
     final StorageReference postPhotoRef = FirebaseStorage.instance.ref().child("photos");
     var timeKey = DateTime.now();
     final StorageUploadTask uploadTask = postPhotoRef.child(timeKey.toString() + ".jpg").putFile(photoFile);

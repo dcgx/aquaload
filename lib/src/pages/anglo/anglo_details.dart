@@ -50,15 +50,15 @@ class _AngloPageDetailsState extends State<AngloDetails> {
         Divider(color: Colors.black,),
         MonthWidget(patent: widget.patent, company: widget.company,),
         Row(children: <Widget>[
-          SizedBox(width: width(context)/13,),
-          Text('Mes: ' + month(widget.month), style: Theme.of(context).textTheme.subtitle,),
-          SizedBox(width: width(context)/10,),
+          SizedBox(width: getWidth(context)/13,),
+          Text('Mes: ' + getMonth(widget.month), style: Theme.of(context).textTheme.subtitle,),
+          SizedBox(width: getWidth(context)/10,),
           Text('Patente: ' + widget.patent.substring(0,4) +'-'+widget.patent.substring(4,6), style: Theme.of(context).textTheme.subtitle,)
           ],
         ),
         Divider(color: Colors.black,),
         FlowsTable(month: widget.month, patent: widget.patent, company: widget.company, documents: snapshot.data.documents),
-        SizedBox(height: height(context)/55),
+        SizedBox(height: getHeight(context)/55),
 
         _footerButtons(snapshot)
       ],
@@ -68,7 +68,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
   Widget _header(){
     return Column(
       children: <Widget>[
-        Image(image: AssetImage('assets/images/logo.png'), height: height(context)/10),
+        Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10),
         Center(
           child: Text('Total m3 Transportado', style: Theme.of(context).textTheme.subtitle,),
         ),
@@ -81,7 +81,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(
-          width: width(context)/3.5,
+          width: getWidth(context)/3.5,
           child: RaisedButton(
             child: Text('Volver'),
             color: Colors.grey[300],
@@ -92,7 +92,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
           ),
         ),
         SizedBox(
-          width: width(context)/2.5,
+          width: getWidth(context)/2.5,
           child: RaisedButton(
             child: Text('Generar informe'),
             color: Colors.red[400],
@@ -103,7 +103,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
           ),
         ),
         SizedBox(
-          width: width(context)/3.5,
+          width: getWidth(context)/3.5,
           child: RaisedButton(
             child: Text('Salir'),
             textColor: Colors.white,

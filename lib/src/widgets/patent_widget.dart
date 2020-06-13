@@ -13,15 +13,15 @@ class PatentWidget extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TruckButton(patent: 'LYES54', company: 'RC Ltda'),
-            TruckButton(patent: 'HFST42', company: 'TRACAS',),
+            PatentButton(patent: 'LYES54', company: 'RC Ltda'),
+            PatentButton(patent: 'HFST42', company: 'TRACAS',),
           ],
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TruckButton(patent: 'KFSU15', company: 'RCT'),
-            TruckButton(patent: 'LRBM45', company: 'RC Ltda.',),
+            PatentButton(patent: 'KFSU15', company: 'RCT'),
+            PatentButton(patent: 'LRBM45', company: 'RC Ltda.',),
           ],
         ),
       ],
@@ -29,18 +29,18 @@ class PatentWidget extends StatelessWidget {
   }
 }
 
-class TruckButton extends StatelessWidget {  
+class PatentButton extends StatelessWidget {  
   String _patent, _company;
-  TruckButton({String patent, String company}){
+  PatentButton({String patent, String company}){
     this._patent=patent;
     this._company=company;
   }
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width(context)/2.5,
+      width: getWidth(context)/2.5,
       child: OutlineButton(
-        child: Text(_patent.substring(0,4) +'-'+_patent.substring(4,6), style: TextStyle(fontSize: 24, color: Colors.black, ),
+        child: Text(_patent.substring(0,2)+"•"+_patent.substring(2,4)+'-'+_patent.substring(4,6), style: TextStyle(fontSize: 24, color: Colors.black, ),
         ),
         onPressed:() {
           _browse(_patent, _company, context);

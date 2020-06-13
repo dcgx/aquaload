@@ -13,14 +13,13 @@ class _AngloPageState extends State<AngloPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Administrador Anglo'),
-      ),
+      appBar: _buildAppBar(),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Image(image: AssetImage('assets/images/logo.png'), height: height(context)/10),
-          SizedBox(height: height(context)/10,),
+          SizedBox(height: getHeight(context)/10,),
+          Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10),
+          SizedBox(height: getHeight(context)/10,),
           Center(
             child: Text('Patentes', style: Theme.of(context).textTheme.subtitle,),
           ),
@@ -28,6 +27,22 @@ class _AngloPageState extends State<AngloPage> {
             child: PatentWidget(),
           )
         ],
+      ),
+    );
+  }
+
+  _buildAppBar(){
+    return AppBar(
+      title: Text('Administrador Anglo'),
+      backgroundColor: Colors.grey[500],
+      leading: InkWell(
+        child: Icon(
+          Icons.arrow_back,
+          color: Colors.black54,
+        ),
+        onTap: (){
+          Navigator.popAndPushNamed(context, '/home');
+        },
       ),
     );
   }

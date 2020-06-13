@@ -12,14 +12,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       routes: {
         '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
         '/anglo': (context) => AngloPage(),
       },
       theme: ThemeData(
-        primaryColor: Color(_primaryColor),
-        accentColor: Color(_accentColor),
+        primaryColor: Colors.grey[600],
+        accentColor: Colors.black,
         textTheme: TextTheme(
           title: TextStyle(fontSize: 25.0, color: Color(_accentColor), fontWeight: FontWeight.w800),
           subtitle: TextStyle(fontSize: 18.0),
@@ -58,12 +59,12 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: height(context)/10,),
-                Image(image: AssetImage('assets/images/logo.png'), height: height(context)/10,),
-                SizedBox(height: height(context)/10,),
+                SizedBox(height: getHeight(context)/10,),
+                Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10,),
+                SizedBox(height: getHeight(context)/10,),
                 Text('CARGA DE AGUA', style: TextStyle(color: Color(0xFF183863)  ,fontSize: Theme.of(context).textTheme.title.fontSize)),
                 Text('SOPRAVAL', style: TextStyle(color: Color(0xFF183863) ,fontSize: Theme.of(context).textTheme.title.fontSize)),
-                SizedBox(height: height(context)/4,),
+                SizedBox(height: getHeight(context)/4,),
                 Text('Haga click en la pantalla', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15, color: Colors.grey,)),
               ],
             ),
