@@ -100,6 +100,30 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
+  _loadingDialog() { 
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context){
+      return Dialog(
+          child: Container(
+            height: getHeight(context)/8,
+            color: Colors.grey[400],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(width: getHeight(context)/30,),
+                CircularProgressIndicator(),
+                SizedBox(width: getWidth(context)/30,),
+                Text('Cargando...', style: TextStyle(fontSize: 18*MediaQuery.of(context).textScaleFactor)), 
+              ]
+            ),
+          )
+        );
+      }
+    );
+  }
+
   _buildLogo(){
     return Image(
       height: getHeight(context)/10,
@@ -115,23 +139,28 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
       textColor: Colors.white,
       onPressed: (){
-        _showSnackBar(message: 'Procesando datos...');
-        FirebaseProvider().getCredentials(password)
-                          .then((QuerySnapshot docs){
-                            if(docs.documents.isNotEmpty){
-                              loggedIn=true;
-                              user = docs.documents[0].data;
-                              checkRole(loggedIn);
-                            } else{
-                              loggedIn=false;
-                              _showSnackBar(message: 'Contraseña incorrecta');
-                            }
-                          });
-      },
+        getCredentials();
+      }
     );
   }
   
-  checkRole(bool loggedIn){
+  void getCredentials() async {
+    _loadingDialog();
+    await FirebaseProvider().getCredentials(password)
+                      .then((QuerySnapshot docs){
+                        if(docs.documents.isNotEmpty){
+                          loggedIn=true;
+                          user = docs.documents[0].data;
+                          checkRole(loggedIn, user);
+                          
+                        } else{
+                          loggedIn=false;
+                          _showSnackBar(message: 'Contraseña incorrecta');
+                        }
+                      });
+  }
+
+  checkRole(bool loggedIn, dynamic user){
     if(loggedIn){
       if(user['role']=='trucker'){
         loggedIn=false;

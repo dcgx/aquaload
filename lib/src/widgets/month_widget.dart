@@ -76,65 +76,75 @@ class MonthButton extends StatelessWidget {
   Widget _browse({BuildContext context, String month, String patent, String company}){
     switch(month){
       case 'Ene':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 1, patent: patent, company: company) : SopravalPage(month: 1)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 1, patent: patent, company: company):SopravalPage(month: 1)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Feb':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 2, patent: patent, company: company) : SopravalPage(month: 2)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 2, patent: patent, company: company):SopravalPage(month: 2)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Mar':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 3, patent: patent, company: company) : SopravalPage(month: 3)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 3, patent: patent, company: company):SopravalPage(month: 3)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Abr':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 4, patent: patent, company: company) : SopravalPage(month: 4)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 4, patent: patent, company: company):SopravalPage(month: 4)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'May':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 5, patent: patent, company: company) : SopravalPage(month: 5)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 5, patent: patent, company: company):SopravalPage(month: 5)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Jun':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 6, patent: patent, company: company) : SopravalPage(month: 6)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 6, patent: patent, company: company):SopravalPage(month: 6)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Jul':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 7, patent: patent, company: company) : SopravalPage(month: 7)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 7, patent: patent, company: company):SopravalPage(month: 7)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Ago':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 8, patent: patent, company: company) : SopravalPage(month: 8)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 8, patent: patent, company: company):SopravalPage(month: 8)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Sep':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 9, patent: patent, company: company) : SopravalPage(month: 9)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 9, patent: patent, company: company):SopravalPage(month: 9)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Oct':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 10, patent: patent, company: company) : SopravalPage(month: 10)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 10, patent: patent, company: company):SopravalPage(month: 10)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Nov':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 11, patent: patent, company: company) : SopravalPage(month: 11)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 11, patent: patent, company: company):SopravalPage(month: 11)), 
+                                    (Route<dynamic> route) => false);
         break;
       case 'Dic':
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => patent!=null ? AngloDetails(month: 12, patent: patent, company: company) : SopravalPage(month: 12)),
-        (Route<dynamic> route) => false);
+        Navigator.of(context)
+                 .pushAndRemoveUntil(TransitionPageRoute(patent!=null ? AngloDetails(month: 12, patent: patent, company: company):SopravalPage(month: 12)), 
+                                    (Route<dynamic> route) => false);
         break;
     }
   }
+}
+
+class TransitionPageRoute extends PageRouteBuilder {
+  final Widget child;
+  TransitionPageRoute(this.child)
+    : super(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation){
+      return child;
+    }, transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child){
+      return child;
+    });
 }

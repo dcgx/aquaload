@@ -45,27 +45,35 @@ class _AngloPageDetailsState extends State<AngloDetails> {
   Widget _content(AsyncSnapshot<QuerySnapshot> snapshot){
     return ListView(
       children: <Widget>[
-        _header(),
-
+        _buildHeader(),
         Divider(color: Colors.black,),
+        
         MonthWidget(patent: widget.patent, company: widget.company,),
-        Row(children: <Widget>[
-          SizedBox(width: getWidth(context)/13,),
-          Text('Mes: ' + getMonth(widget.month), style: Theme.of(context).textTheme.subtitle,),
-          SizedBox(width: getWidth(context)/10,),
-          Text('Patente: ' + widget.patent.substring(0,4) +'-'+widget.patent.substring(4,6), style: Theme.of(context).textTheme.subtitle,)
-          ],
-        ),
+        
+        _buildMonthPatent(),
         Divider(color: Colors.black,),
+        
         FlowsTable(month: widget.month, patent: widget.patent, company: widget.company, documents: snapshot.data.documents),
         SizedBox(height: getHeight(context)/55),
 
-        _footerButtons(snapshot)
+        _buildFooterButtons(snapshot)
       ],
     );
   }
 
-  Widget _header(){
+
+  _buildMonthPatent(){
+    return Row(
+      children: <Widget>[
+        SizedBox(width: getWidth(context)/13,),
+        Text('Mes: ' + getMonth(widget.month), style: Theme.of(context).textTheme.subtitle,),
+        SizedBox(width: getWidth(context)/10,),
+        Text('Patente: ' + widget.patent.substring(0,4) +'-'+widget.patent.substring(4,6), style: Theme.of(context).textTheme.subtitle,)
+      ],
+    );
+  }
+  
+  _buildHeader(){
     return Column(
       children: <Widget>[
         Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10),
@@ -76,7 +84,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
     );
   }
 
-  Widget _footerButtons(AsyncSnapshot<QuerySnapshot> snapshot){
+  _buildFooterButtons(AsyncSnapshot<QuerySnapshot> snapshot){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[

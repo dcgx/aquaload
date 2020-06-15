@@ -7,7 +7,7 @@ double getWidth(BuildContext context){
   return MediaQuery.of(context).size.width;
 }
 
-String getMonth(int monthNumber){
+getMonth(int monthNumber){
   switch(monthNumber){
     case 1:
       return 'Enero';

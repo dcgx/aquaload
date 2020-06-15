@@ -103,7 +103,7 @@ Future<File> generateSaveShowReport({context, List<DocumentSnapshot> documents, 
   // Save report (PDF)
   final output = await getTemporaryDirectory();
   final now = DateTime.now();
-  final file = File("${output.path}/informe_agua_sopraval_${now}.pdf");
+  final file = File("${output.path}/informe_agua_sopraval_${now.toString()}.pdf");
   print(pdf);
   await file.writeAsBytes(pdf.save());
 

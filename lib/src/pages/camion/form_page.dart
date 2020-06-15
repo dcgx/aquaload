@@ -22,13 +22,14 @@ class _FormPageState extends State<FormPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = new GlobalKey<FormState>();
   final db = Firestore.instance;
-  
   String formattedDate = DateFormat('dd-MM-yyyy - kk:mm').format(DateTime.now());
   File photoFile;
   String _url;
   double _totalLoaded;
   double _finalFlow;
   double _initialFlow;
+  String message;
+  
 
   _openCamera(BuildContext context) async {
     var  picture= await ImagePicker.pickImage(source: ImageSource.camera);
@@ -75,6 +76,9 @@ class _FormPageState extends State<FormPage> {
     }
   }
 
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,7 +108,7 @@ class _FormPageState extends State<FormPage> {
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if(value.isEmpty) {
-                        return 'Por favor rellene todos los campos';
+                        return 'Complete todos los campos';
                       }
                       return null;
                     },
@@ -131,7 +135,7 @@ class _FormPageState extends State<FormPage> {
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if(value.isEmpty) {
-                        return 'Por favor rellene todos los campos';
+                        return 'Complete todos los campos';
                       }
                       return null;
                     },
@@ -194,20 +198,19 @@ class _FormPageState extends State<FormPage> {
                         ),
                         Expanded(
                           child: RaisedButton(
-                            child: Text('Enviar', style: TextStyle(color: Colors.white),),
+                            child: Text('Guardar', style: TextStyle(color: Colors.white),),
                             onPressed: (){
                               final form = _formKey.currentState;
-                              if(form.validate() && photoFile!=null){
+                              if(form.validate()){
                                 form.save();
+                                _loadingDialog();
                                 saveToDataBase();
-                                
                               }else{
                                 showSnackBar(message: 'Por favor, agregar una fotografía', seconds: 1);
                               }
                             },
                           ),
                         ),
-
                       ],
                     )
                   )
@@ -228,6 +231,7 @@ class _FormPageState extends State<FormPage> {
       validateImage();
     });
   }
+
 
   void showSnackBar({String message, int seconds}){
     final snackbar = SnackBar(
@@ -253,13 +257,19 @@ class _FormPageState extends State<FormPage> {
           'loaded_by': this.widget.patent
         }
       );
-      showSnackBar(message: 'Listo!. Datos correctamente guardados', seconds: 1);
-      _cleanForm();
+      
+      setState(() {
+        _cleanForm();
+        showSnackBar(message: 'Listo!, Datos correctamente guardados', seconds: 2);
+        Future.delayed(Duration(seconds: 0), (){
+          Navigator.pop(context);
+        });
+      });
+      
     }
   }
 
   Future<String> uploadPhoto() async {
-    showSnackBar(message: 'Cargando fotografía...', seconds: 15);
     final StorageReference postPhotoRef = FirebaseStorage.instance.ref().child("photos");
     var timeKey = DateTime.now();
     final StorageUploadTask uploadTask = postPhotoRef.child(timeKey.toString() + ".jpg").putFile(photoFile);
@@ -271,5 +281,29 @@ class _FormPageState extends State<FormPage> {
   double totalLoaded(double initialFlow, double finalFlow){
     double totalLoaded = finalFlow-initialFlow;
     return totalLoaded;
+  }
+
+  Widget _loadingDialog() { 
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context){
+      return Dialog(
+          child: Container(
+            height: getHeight(context)/8,
+            color: Colors.grey[400],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(width: getHeight(context)/30,),
+                CircularProgressIndicator(),
+                SizedBox(width: getWidth(context)/30,),
+                Text('Cargando...', style: TextStyle(fontSize: 18*MediaQuery.of(context).textScaleFactor)), 
+              ]
+            ),
+          )
+        );
+      }
+    );
   }
 }

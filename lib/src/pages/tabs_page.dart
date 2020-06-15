@@ -16,30 +16,13 @@ class TabsPageState extends State<TabsPage>{
   var user;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: _browse(_currentIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,  //Se puede cambiar por shifting
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Inicio')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text('Observaciones')
-          ),
-        ],
-        onTap: (index){
-          setState(()=>_currentIndex = index);
-        },
-      ),
+      bottomNavigationBar: _bottomNavigatorBar()
     );
   }
   
-  Widget _browse(int index){
+  _browse(int index){
     switch(index){
       case 1:
         return ObservationsPage();
@@ -48,4 +31,25 @@ class TabsPageState extends State<TabsPage>{
     }
   }
 
+  _bottomNavigatorBar(){
+    return BottomNavigationBar(
+      currentIndex: _currentIndex,
+      type: BottomNavigationBarType.fixed,  //Se puede cambiar por shifting
+      items: [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text('Inicio')
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          title: Text('Observaciones')
+        ),
+      ],
+      onTap: (index){
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+    );
+  }
 } 
