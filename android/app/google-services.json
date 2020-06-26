@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "584295348758",
+    "firebase_url": "https://waterchapp.firebaseio.com",
+    "project_id": "waterchapp",
+    "storage_bucket": "waterchapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584295348758:android:526ca21458636771099337",
+        "android_client_info": {
+          "package_name": "com.afxat.waterchapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584295348758-ofgm6ukl0bfftg6pb3chu8oe56mmtit9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY68CkXvr2vCZUv8A6wxypz8mp_O0Baac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584295348758-ofgm6ukl0bfftg6pb3chu8oe56mmtit9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
