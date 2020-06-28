@@ -37,7 +37,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
             color: Colors.black54,
           ),
           onTap: (){
-            Navigator.popAndPushNamed(context, '/anglo');
+            Navigator.of(context).pop();
           },
         ),
       ),
@@ -80,8 +80,10 @@ class _AngloPageDetailsState extends State<AngloDetails> {
     return Row(
       children: <Widget>[
         SizedBox(width: getWidth(context)/13,),
+        // ignore: deprecated_member_use
         Text('Mes: ' + getMonth(widget.month), style: Theme.of(context).textTheme.subtitle,),
         SizedBox(width: getWidth(context)/10,),
+        // ignore: deprecated_member_use
         Text('Patente: ' + widget.patent.substring(0,4) +'-'+widget.patent.substring(4,6), style: Theme.of(context).textTheme.subtitle,)
       ],
     );
@@ -92,6 +94,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
       children: <Widget>[
         Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10),
         Center(
+          // ignore: deprecated_member_use
           child: Text('Total m3 Transportado', style: Theme.of(context).textTheme.subtitle,),
         ),
       ],
@@ -109,7 +112,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
             color: Colors.grey[300],
             textColor: Colors.black,
             onPressed: (){
-              Navigator.popAndPushNamed(context, '/anglo');
+              Navigator.of(context).pop();
             },
           ),
         ),
@@ -130,7 +133,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
             child: Text('Salir'),
             textColor: Colors.white,
             onPressed: (){
-              Navigator.popAndPushNamed(context, '/home');
+              Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
             },
           ),
         )

@@ -80,7 +80,7 @@ class _SopravalPageState extends State<SopravalPage> {
                 child: Text('Salir'),
                 textColor: Colors.white,
                 onPressed: (){
-                  Navigator.popAndPushNamed(context, '/home');
+                  Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
                 },
               ),
             ),

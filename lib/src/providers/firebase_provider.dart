@@ -63,4 +63,8 @@ class FirebaseProvider{
       }
     });
   }
+
+  getServerTimestamp(){
+    return FieldValue.serverTimestamp();
+  }
 }

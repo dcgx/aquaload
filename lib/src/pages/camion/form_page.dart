@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:waterchapp/src/functions/functions.dart';
+import 'package:waterchapp/src/providers/firebase_provider.dart';
 
 
 class FormPage extends StatefulWidget {
@@ -23,17 +23,16 @@ class _FormPageState extends State<FormPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = new GlobalKey<FormState>();
   final db = Firestore.instance;
-  String formattedDate = DateFormat('dd-MM-yyyy - kk:mm').format(DateTime.now());
   File photoFile;
   String _url;
   double _totalLoaded;
   double _finalFlow;
   double _initialFlow;
   String message;
-  
+  String formattedDate = DateFormat('dd-MM-yyyy - hh:mm a').format(DateTime.now());
 
   _openCamera(BuildContext context) async {
-    var  picture= await ImagePicker.pickImage(source: ImageSource.camera, maxWidth: 300);
+    var  picture= await ImagePicker.pickImage(source: ImageSource.camera, maxWidth: 500);
     this.setState((){
       photoFile=picture;
     });
@@ -77,9 +76,6 @@ class _FormPageState extends State<FormPage> {
     }
   }
 
-
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +99,7 @@ class _FormPageState extends State<FormPage> {
                       ],
                     ),
                   ),
-                  Text(formattedDate.toString()),
+                  Text(formattedDate),
                   TextFormField(
                     controller: _initialFlowController,
                     keyboardType: TextInputType.number,
@@ -184,7 +180,7 @@ class _FormPageState extends State<FormPage> {
                             child: Text('Salir', style: TextStyle(color: Colors.black),),
                             color: Colors.grey[300],
                             onPressed: (){
-                              Navigator.popAndPushNamed(context, '/home');
+                              Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
                             },
                           ),
                         ),
@@ -202,7 +198,6 @@ class _FormPageState extends State<FormPage> {
                             child: Text('Guardar', style: TextStyle(color: Colors.white),),
                             onPressed: (){
                               final form = _formKey.currentState;
-                              
                               checkConnectivity().then((internet){
                                 if(internet!=null && internet){
                                   if(form.validate() && photoFile!=null){
@@ -213,7 +208,7 @@ class _FormPageState extends State<FormPage> {
                                     showSnackBar(message: 'Agregar una fotografía', seconds: 1, icon: Icon(Icons.info));
                                   }
                                 } else {
-                                  showNotConnectionDialog();
+                                  showNotConnectionDialog(context);
                                 }
                               });
                             },
@@ -240,39 +235,12 @@ class _FormPageState extends State<FormPage> {
     });
   }
 
-  Future<void> showNotConnectionDialog(){
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context){
-        return AlertDialog(
-          title: Text('Error de conexión'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('No hay conexión a internet'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      }
-    );
-  }
-
   void showSnackBar({String message, int seconds, Icon icon}){
     final snackbar = SnackBar(
       content: Row(
         children: <Widget>[
           icon,
-          Text(message, style: TextStyle(fontSize: 18*MediaQuery.of(context).textScaleFactor)),
+          Text(message, style: TextStyle(fontSize: 15*MediaQuery.of(context).textScaleFactor)),
         ],
       ),
       backgroundColor: Color(0xFF183863),
@@ -280,29 +248,33 @@ class _FormPageState extends State<FormPage> {
     );
     _scaffoldKey.currentState.showSnackBar(snackbar);
   }
-
+  
   void saveToDataBase() async {
     if(_formKey.currentState.validate()){
       _totalLoaded = totalLoaded(_initialFlow, _finalFlow);
       _url = await uploadPhoto();
       _formKey.currentState.save();
-      db.collection('data').document().setData(
+      db.collection('data').document(widget.patent+DateFormat('ddMMyyhhmma').format(DateTime.now())).setData(
         {
           'initialFlow': this._initialFlow,
           'finalFlow': this._finalFlow,
-          'date': DateTime.now(),
+          'date': FirebaseProvider().getServerTimestamp(),
           'totalLoaded': this._totalLoaded,
           'photoUrl': this._url,
           'loaded_by': this.widget.patent
         }
-      );
-      setState(() {
-        _cleanForm();
-        showSnackBar(message: 'Listo!, Datos correctamente guardados', seconds: 2, icon: Icon(Icons.check));
-        Future.delayed(Duration(seconds: 0), (){
-          Navigator.pop(context);
-        });
+      ).then((_) => {
+        setState(() {
+          _cleanForm();
+          showSnackBar(message: 'Listo!, Datos correctamente guardados', seconds: 2, icon: Icon(Icons.check));
+          Future.delayed(Duration(seconds: 0), (){
+            Navigator.pop(context);
+          });
+        }),
+      }).catchError((error){
+        showSnackBar(message: error.toString(), seconds: 3, icon: Icon(Icons.error));
       });
+      
       
     }
   }
@@ -310,7 +282,7 @@ class _FormPageState extends State<FormPage> {
   Future<String> uploadPhoto() async {
     final StorageReference postPhotoRef = FirebaseStorage.instance.ref().child("photos");
     var timeKey = DateTime.now();
-    final StorageUploadTask uploadTask = postPhotoRef.child(timeKey.toString() + ".jpg").putFile(photoFile);
+    final StorageUploadTask uploadTask = postPhotoRef.child(widget.patent+timeKey.toString() + ".jpg").putFile(photoFile);
     var imageUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
     _url = imageUrl.toString();
     return _url;
@@ -343,15 +315,5 @@ class _FormPageState extends State<FormPage> {
         );
       }
     );
-  }
-  
-  Future<bool> checkConnectivity() async{
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
-      return true;
-    } else if (connectivityResult == ConnectivityResult.wifi) {
-      return true;
-    }
-    return false;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 
 double getHeight(BuildContext context){
     return MediaQuery.of(context).size.height;
@@ -46,4 +47,41 @@ getMonth(int monthNumber){
       return 'Diciembre';
       break;
   }
+}
+
+Future<bool> checkConnectivity() async{
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.mobile) {
+    return true;
+  } else if (connectivityResult == ConnectivityResult.wifi) {
+    return true;
+  }
+  return false;
+}
+
+Future<void> showNotConnectionDialog(BuildContext context){
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context){
+      return AlertDialog(
+        title: Text('Error de conexión'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('No hay conexión a internet'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('OK'),
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    }
+  );
 }

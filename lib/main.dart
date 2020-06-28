@@ -20,17 +20,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
-        '/anglo': (context) => AngloPage(),
       },
       theme: ThemeData(
         primaryColor: Colors.grey[600],
         accentColor: Colors.black,
         textTheme: TextTheme(
+          // ignore: deprecated_member_use
           title: TextStyle(fontSize: 25.0, color: Color(_accentColor), fontWeight: FontWeight.w800),
+          // ignore: deprecated_member_use
           subtitle: TextStyle(fontSize: 18.0),
+          // ignore: deprecated_member_use
           body1: TextStyle(fontSize: 18.0),
+          // ignore: deprecated_member_use
           body2: TextStyle(fontSize: 13.0),
         ),
         buttonTheme: ButtonThemeData(

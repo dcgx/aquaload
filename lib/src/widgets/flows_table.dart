@@ -41,6 +41,35 @@ class _FlowsTableState extends State<FlowsTable> {
             TableRowItem(perDay: widget.perDay, firColumnIndex: 13, secColumnIndex: 28),
             TableRowItem(perDay: widget.perDay, firColumnIndex: 14, secColumnIndex: 29),
             TableRowItem(perDay: widget.perDay, firColumnIndex: 15, secColumnIndex: 30),
+            TableRow(
+              children: [
+                Column(
+                  children: <Widget>[
+                    Text('')
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Text('')
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    SizedBox()
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Text('31', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center)
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Text(widget.perDay[31-1].toStringAsFixed(2), style: TextStyle(fontSize: 15.0), textAlign: TextAlign.right)
+                  ],
+                )
+              ]
+            ),
           ],
         ),
         Text('Total por mes: ' + widget.totalMonth.toString())

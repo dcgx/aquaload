@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.black54,
         ),
         onTap: (){
-          Navigator.popAndPushNamed(context, '/home');
+          Navigator.of(context).pop();
         },
       ),
     );
@@ -139,7 +139,13 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
       textColor: Colors.white,
       onPressed: (){
-        getCredentials();
+        checkConnectivity().then((internet){
+          if(internet!=null && internet){
+            getCredentials();
+          } else{
+            showNotConnectionDialog(context);
+          }
+        });
       }
     );
   }
@@ -174,6 +180,7 @@ class _OtpScreenState extends State<OtpScreen> {
     secondNumberController.clear();
     thirdNumberController.clear();
     fourthNumberController.clear();
+    numberIndex=0;
   }
 
   void checkRole(bool loggedIn, dynamic user){
