@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
@@ -32,7 +33,7 @@ class _FormPageState extends State<FormPage> {
   
 
   _openCamera(BuildContext context) async {
-    var  picture= await ImagePicker.pickImage(source: ImageSource.camera);
+    var  picture= await ImagePicker.pickImage(source: ImageSource.camera, maxWidth: 300);
     this.setState((){
       photoFile=picture;
     });
@@ -201,13 +202,20 @@ class _FormPageState extends State<FormPage> {
                             child: Text('Guardar', style: TextStyle(color: Colors.white),),
                             onPressed: (){
                               final form = _formKey.currentState;
-                              if(form.validate()){
-                                form.save();
-                                _loadingDialog();
-                                saveToDataBase();
-                              }else{
-                                showSnackBar(message: 'Por favor, agregar una fotografía', seconds: 1);
-                              }
+                              
+                              checkConnectivity().then((internet){
+                                if(internet!=null && internet){
+                                  if(form.validate() && photoFile!=null){
+                                    form.save();
+                                    _loadingDialog();
+                                    saveToDataBase();
+                                  }else{
+                                    showSnackBar(message: 'Agregar una fotografía', seconds: 1, icon: Icon(Icons.info));
+                                  }
+                                } else {
+                                  showNotConnectionDialog();
+                                }
+                              });
                             },
                           ),
                         ),
@@ -221,7 +229,7 @@ class _FormPageState extends State<FormPage> {
       )
     );
   }
-
+  
   void _cleanForm(){
     _initialFlowController.clear();
     _finalFlowController.clear();
@@ -232,10 +240,41 @@ class _FormPageState extends State<FormPage> {
     });
   }
 
+  Future<void> showNotConnectionDialog(){
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Error de conexión'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('No hay conexión a internet'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      }
+    );
+  }
 
-  void showSnackBar({String message, int seconds}){
+  void showSnackBar({String message, int seconds, Icon icon}){
     final snackbar = SnackBar(
-      content: Text(message),
+      content: Row(
+        children: <Widget>[
+          icon,
+          Text(message, style: TextStyle(fontSize: 18*MediaQuery.of(context).textScaleFactor)),
+        ],
+      ),
       backgroundColor: Color(0xFF183863),
       duration: Duration(seconds: seconds),
     );
@@ -257,10 +296,9 @@ class _FormPageState extends State<FormPage> {
           'loaded_by': this.widget.patent
         }
       );
-      
       setState(() {
         _cleanForm();
-        showSnackBar(message: 'Listo!, Datos correctamente guardados', seconds: 2);
+        showSnackBar(message: 'Listo!, Datos correctamente guardados', seconds: 2, icon: Icon(Icons.check));
         Future.delayed(Duration(seconds: 0), (){
           Navigator.pop(context);
         });
@@ -283,7 +321,7 @@ class _FormPageState extends State<FormPage> {
     return totalLoaded;
   }
 
-  Widget _loadingDialog() { 
+  void _loadingDialog() { 
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -305,5 +343,15 @@ class _FormPageState extends State<FormPage> {
         );
       }
     );
+  }
+  
+  Future<bool> checkConnectivity() async{
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      return true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      return true;
+    }
+    return false;
   }
 }

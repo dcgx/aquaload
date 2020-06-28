@@ -27,6 +27,20 @@ class _AngloPageDetailsState extends State<AngloDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Administrador Anglo'),
+        backgroundColor: Colors.grey[500],
+        leading: InkWell(
+          borderRadius: BorderRadius.circular(30.0),
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.black54,
+          ),
+          onTap: (){
+            Navigator.popAndPushNamed(context, '/anglo');
+          },
+        ),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _query,
         builder: ((BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){

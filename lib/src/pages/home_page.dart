@@ -36,7 +36,9 @@ class _HomePageState extends State<HomePage> {
       SizedBox(height: getHeight(context)/10,),
       _buildLogo(),
       SizedBox(height: getHeight(context)/10,),
+      // ignore: deprecated_member_use
       Text('CARGA DE AGUA', style: TextStyle(color: Color(0xFF183863)  ,fontSize: Theme.of(context).textTheme.title.fontSize)),
+      // ignore: deprecated_member_use
       Text('SOPRAVAL', style: TextStyle(color: Color(0xFF183863) ,fontSize: Theme.of(context).textTheme.title.fontSize)),
       SizedBox(height: getHeight(context)/4,),
       Text('Haga click en la pantalla', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15, color: Colors.grey,)),

@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:waterchapp/src/functions/functions.dart';
 import 'package:waterchapp/src/pages/anglo/anglo_page.dart';
+import 'package:waterchapp/src/pages/camion/form_page.dart';
 import 'package:waterchapp/src/pages/sopraval/sopraval_page.dart';
-import 'package:waterchapp/src/pages/tabs_page.dart';
 import 'package:waterchapp/src/providers/firebase_provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -94,13 +94,13 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
             ),
           ),
-          buildNumberPad(),
+          _buildNumberPad(),
         ],
       ),
     );
   }
 
-  _loadingDialog() { 
+  void _loadingDialog() { 
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -124,14 +124,14 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  _buildLogo(){
+  Widget _buildLogo(){
     return Image(
       height: getHeight(context)/10,
       image: AssetImage('assets/images/logo.png'),
     );
   }
 
-  _buildLoginButton(){
+  Widget _buildLoginButton(){
     return RaisedButton(
       child: Text(
         'Entrar',
@@ -152,20 +152,38 @@ class _OtpScreenState extends State<OtpScreen> {
                           loggedIn=true;
                           user = docs.documents[0].data;
                           checkRole(loggedIn, user);
-                          
                         } else{
                           loggedIn=false;
-                          _showSnackBar(message: 'Contraseña incorrecta');
+                          setState(() {
+                            Future.delayed(Duration(seconds: 0), (){
+                              Navigator.pop(context);
+                            });
+                            _showSnackBar(message: 'Contraseña incorrecta', icon: Icon(Icons.close));  
+                          });
                         }
                       });
   }
 
-  checkRole(bool loggedIn, dynamic user){
+  void _closeDialog(){
+    Navigator.of(context).pop();
+  }
+
+  void _clearPassInput(){
+    password="";
+    firstNumberController.clear();
+    secondNumberController.clear();
+    thirdNumberController.clear();
+    fourthNumberController.clear();
+  }
+
+  void checkRole(bool loggedIn, dynamic user){
+    _closeDialog();
+    _clearPassInput();
     if(loggedIn){
       if(user['role']=='trucker'){
         loggedIn=false;
         Navigator.push(context, MaterialPageRoute(
-          builder: (context) => TabsPage(uid: user['uid'], patent: user['patent'], company: user['company'],)
+          builder: (context) => FormPage(uid: user['uid'], patent: user['patent'], company: user['company'],)
         ));
       } else if(user['role']=='adminAnglo'){
         loggedIn=false;
@@ -181,17 +199,21 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 
-
-  _showSnackBar({String message}){
+  void _showSnackBar({String message, Icon icon}){
     Scaffold.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Row(
+          children: <Widget>[
+            icon,
+            Text(message, style: TextStyle(fontSize: 20),)
+          ],
+        ),
         duration: Duration(seconds: 1),
       )
     );
   }
 
-  buildNumberPad(){
+  Widget _buildNumberPad(){
     return Expanded(
       child: Container(
         alignment: Alignment.bottomCenter,
@@ -294,7 +316,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         borderRadius: BorderRadius.circular(60.0)
                       ),
                       onPressed: (){
-                        clearPass();
+                        backspacePassButton();
                       },
                       child: Icon(
                         Icons.backspace,
@@ -311,7 +333,7 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  clearPass(){
+  void backspacePassButton(){
     if(numberIndex==0)
       numberIndex=0;
     else if (numberIndex == 4){
@@ -325,7 +347,7 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 
-  passIndexSetup(String text){
+  void passIndexSetup(String text){
     if(numberIndex == 0){
       numberIndex=1;
     }
@@ -341,7 +363,7 @@ class _OtpScreenState extends State<OtpScreen> {
     password=strNumber;
   }
 
-  setPass(int n, String text){
+  void setPass(int n, String text){
     switch(n){
       case 1:
         firstNumberController.text = text;
@@ -358,7 +380,7 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 
-  buildPasswordRow(){
+  Widget buildPasswordRow(){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[

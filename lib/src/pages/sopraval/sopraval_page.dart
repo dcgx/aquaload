@@ -59,11 +59,13 @@ class _SopravalPageState extends State<SopravalPage> {
       children: <Widget>[
         Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10),
         Center(
+          // ignore: deprecated_member_use
           child: Text('Total m3 Transportado', style: Theme.of(context).textTheme.subtitle,),
         ),
         Divider(color: Colors.black,),
         MonthWidget(),
         Center(
+          // ignore: deprecated_member_use
           child: Text('Mes: ' + getMonth(widget.month), style: Theme.of(context).textTheme.title,),
         ),
         Divider(color: Colors.black,),
