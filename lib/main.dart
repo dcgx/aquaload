@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:waterchapp/src/pages/anglo/anglo_page.dart';
 import 'package:waterchapp/src/pages/home_page.dart';
-import 'package:waterchapp/src/pages/login/login_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,19 +20,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => HomePage(),
+        '/anglo': (context) => AngloPage(),
       },
       theme: ThemeData(
         primaryColor: Colors.grey[600],
         accentColor: Colors.black,
         textTheme: TextTheme(
-          // ignore: deprecated_member_use
-          title: TextStyle(fontSize: 25.0, color: Color(_accentColor), fontWeight: FontWeight.w800),
-          // ignore: deprecated_member_use
-          subtitle: TextStyle(fontSize: 18.0),
-          // ignore: deprecated_member_use
-          body1: TextStyle(fontSize: 18.0),
-          // ignore: deprecated_member_use
-          body2: TextStyle(fontSize: 13.0),
+          headline1: TextStyle(fontSize: 25, color: Color(_accentColor), fontWeight: FontWeight.w800),
+          headline2: TextStyle(fontSize: 18),
+          bodyText1: TextStyle(fontSize: 13.0),
         ),
         buttonTheme: ButtonThemeData(
           buttonColor: Color(0xFF183863),

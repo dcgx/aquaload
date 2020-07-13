@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waterchapp/src/functions/functions.dart';
+import 'package:waterchapp/src/widgets/helpers.dart';
 import 'package:waterchapp/src/pages/anglo/anglo_details.dart';
 import 'package:waterchapp/src/pages/sopraval/sopraval_page.dart';
 
@@ -59,8 +59,8 @@ class MonthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: getWidth(context)/5,
-      height: getHeight(context)/14,
+      width: width(context)/5,
+      height: heigth(context)/14,
       child: OutlineButton(
         padding: EdgeInsets.all(15.0),
         child: Text(month, style: TextStyle(fontSize: 15, color: Colors.black, ),
@@ -73,7 +73,7 @@ class MonthButton extends StatelessWidget {
     );
   }
 
-  Widget _browse({BuildContext context, String month, String patent, String company}){
+  void _browse({BuildContext context, String month, String patent, String company}){
     switch(month){
       case 'Ene':
         Navigator.of(context)

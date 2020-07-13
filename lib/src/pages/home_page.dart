@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waterchapp/src/functions/functions.dart';
+import 'package:waterchapp/src/widgets/helpers.dart';
 import 'package:waterchapp/src/pages/login/login_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           color: Colors.white,
           child: Center(
-            child: _buildMainContent(),
+            child: _buildContent(),
           ),
         ),
         onTap: (){
@@ -29,27 +29,29 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _buildMainContent(){
+  _buildContent(){
     return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
-      SizedBox(height: getHeight(context)/10,),
+      SizedBox(height: heigth(context)/10,),
       _buildLogo(),
-      SizedBox(height: getHeight(context)/10,),
-      // ignore: deprecated_member_use
-      Text('CARGA DE AGUA', style: TextStyle(color: Color(0xFF183863)  ,fontSize: Theme.of(context).textTheme.title.fontSize)),
-      // ignore: deprecated_member_use
-      Text('SOPRAVAL', style: TextStyle(color: Color(0xFF183863) ,fontSize: Theme.of(context).textTheme.title.fontSize)),
-      SizedBox(height: getHeight(context)/4,),
+      SizedBox(height: heigth(context)/10,),
+      Text('CARGA DE AGUA', style: TextStyle(color: Color(0xFF183863), fontSize: Theme.of(context).textTheme.headline1.fontSize)),
+      Text('SOPRAVAL', style: TextStyle(color: Color(0xFF183863), fontSize: Theme.of(context).textTheme.headline1.fontSize)),
+      SizedBox(height: heigth(context)/4,),
       Text('Haga click en la pantalla', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15, color: Colors.grey,)),
-      ],
-    );
+      Divider(height: 60,),
+      FlatButton(
+        child: Text('Instructivo de la APP'),
+        onPressed: (){},
+      ),
+    ]);
   }
 
   _buildLogo(){
     return Image(
       image: AssetImage('assets/images/logo.png'), 
-      height: getHeight(context)/10,
+      height: heigth(context)/10,
     );
   }
 }

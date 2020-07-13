@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:waterchapp/src/functions/functions.dart';
+import 'package:intl/intl.dart';
+import 'package:waterchapp/src/widgets/helpers.dart';
 import 'package:waterchapp/src/providers/firebase_provider.dart';
-import 'package:waterchapp/src/report/functions.dart';
+import 'package:waterchapp/src/report/generate_pdf.dart';
 import 'package:waterchapp/src/widgets/flows_table.dart';
-import 'package:waterchapp/src/widgets/month_widget.dart';
 
 class AngloDetails extends StatefulWidget {
   final String patent, company;
@@ -17,7 +17,7 @@ class AngloDetails extends StatefulWidget {
 
 class _AngloPageDetailsState extends State<AngloDetails> {
   Stream<QuerySnapshot> _query;
-
+  String monthValue = getMonth(int.parse(DateFormat('M').format(DateTime.now())));
   void initState(){
     super.initState(); 
     var provider = FirebaseProvider(); 
@@ -36,9 +36,7 @@ class _AngloPageDetailsState extends State<AngloDetails> {
             Icons.arrow_back,
             color: Colors.black54,
           ),
-          onTap: (){
-            Navigator.of(context).pop();
-          },
+          onTap: () => Navigator.of(context).pushNamedAndRemoveUntil('/anglo', (route) => false)
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -61,38 +59,35 @@ class _AngloPageDetailsState extends State<AngloDetails> {
       children: <Widget>[
         _buildHeader(),
         Divider(color: Colors.black,),
-        
-        MonthWidget(patent: widget.patent, company: widget.company,),
-        
-        _buildMonthPatent(),
+        _buildPatentTitle(),
+
+        _buildDropdownButton(),
         Divider(color: Colors.black,),
         
-        FlowsTable(month: widget.month, patent: widget.patent, company: widget.company, documents: snapshot.data.documents),
-        SizedBox(height: getHeight(context)/55),
+        FlowsTable(month: getMonthNumber(monthValue), patent: widget.patent, company: widget.company, documents: snapshot.data.documents),
+        SizedBox(height: heigth(context)/55),
 
         _buildFooterButtons(snapshot)
       ],
     );
   }
 
-
-  _buildMonthPatent(){
+  Widget _buildPatentTitle(){
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        SizedBox(width: getWidth(context)/13,),
-        // ignore: deprecated_member_use
-        Text('Mes: ' + getMonth(widget.month), style: Theme.of(context).textTheme.subtitle,),
-        SizedBox(width: getWidth(context)/10,),
-        // ignore: deprecated_member_use
-        Text('Patente: ' + widget.patent.substring(0,4) +'-'+widget.patent.substring(4,6), style: Theme.of(context).textTheme.subtitle,)
+        Container(
+          color: Colors.grey[200],
+          child: Text(widget.patent.substring(0,2)+"•"+widget.patent.substring(2,4)+'-'+widget.patent.substring(4,6), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
+        )
       ],
     );
   }
   
-  _buildHeader(){
+  Widget _buildHeader(){
     return Column(
       children: <Widget>[
-        Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10),
+        Image(image: AssetImage('assets/images/logo.png'), height: heigth(context)/10),
         Center(
           // ignore: deprecated_member_use
           child: Text('Total m3 Transportado', style: Theme.of(context).textTheme.subtitle,),
@@ -101,34 +96,34 @@ class _AngloPageDetailsState extends State<AngloDetails> {
     );
   }
 
-  _buildFooterButtons(AsyncSnapshot<QuerySnapshot> snapshot){
+  Widget _buildFooterButtons(AsyncSnapshot<QuerySnapshot> snapshot){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(
-          width: getWidth(context)/3.5,
+          width: width(context)/3.5,
           child: RaisedButton(
             child: Text('Volver'),
             color: Colors.grey[300],
             textColor: Colors.black,
             onPressed: (){
-              Navigator.of(context).pop();
+              Navigator.of(context).popAndPushNamed('/anglo');
             },
           ),
         ),
         SizedBox(
-          width: getWidth(context)/2.5,
+          width: width(context)/2.5,
           child: RaisedButton(
             child: Text('Generar informe'),
             color: Colors.red[400],
             textColor: Colors.white,
             onPressed: (){
-              return generateSaveShowReport(context: context, month: widget.month, patent: widget.patent, company: widget.company, documents: snapshot.data.documents);
+              return generateSaveShowPdf(context: context, month: getMonthNumber(monthValue), patent: widget.patent, company: widget.company, documents: snapshot.data.documents);
             }
           ),
         ),
         SizedBox(
-          width: getWidth(context)/3.5,
+          width: width(context)/3.5,
           child: RaisedButton(
             child: Text('Salir'),
             textColor: Colors.white,
@@ -138,6 +133,33 @@ class _AngloPageDetailsState extends State<AngloDetails> {
           ),
         )
       ],
+    );
+  }
+
+  Widget _buildDropdownButton(){
+    return Center(
+      child: DropdownButton<String>(
+        value: monthValue,
+        icon: Icon(Icons.date_range),
+        iconSize: 25,
+        style: TextStyle(color: Colors.black),
+        underline: Container(
+          height: 2,
+          color: Theme.of(context).primaryColor,
+        ),
+        onChanged: (String newValue) {
+          setState(() {
+            monthValue = newValue;
+          });
+        },
+        items: <String>['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Container(width:90, height:20, child: Text(value, style: TextStyle(fontSize: 16),),),
+          );
+        }).toList(),
+      ),
     );
   }
 }

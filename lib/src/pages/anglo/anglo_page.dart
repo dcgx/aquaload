@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waterchapp/src/functions/functions.dart';
+import 'package:waterchapp/src/widgets/helpers.dart';
 import 'package:waterchapp/src/widgets/patent_widget.dart';
 
 class AngloPage extends StatefulWidget {
@@ -17,11 +17,11 @@ class _AngloPageState extends State<AngloPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          SizedBox(height: getHeight(context)/10,),
-          Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10),
-          SizedBox(height: getHeight(context)/10,),
+          SizedBox(height: heigth(context)/10,),
+          Image(image: AssetImage('assets/images/logo.png'), height: heigth(context)/10),
+          SizedBox(height: heigth(context)/10,),
           Center(
-            child: Text('Patentes', style: Theme.of(context).textTheme.subtitle,),
+            child: Text('Patentes', style: Theme.of(context).textTheme.headline2,),
           ),
           Center(
             child: PatentWidget(),
@@ -31,7 +31,7 @@ class _AngloPageState extends State<AngloPage> {
     );
   }
 
-  _buildAppBar(){
+  Widget _buildAppBar(){
     return AppBar(
       title: Text('Administrador Anglo'),
       backgroundColor: Colors.grey[500],

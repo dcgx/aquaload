@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waterchapp/src/functions/functions.dart';
+import 'package:waterchapp/src/widgets/helpers.dart';
 import 'package:waterchapp/src/pages/anglo/anglo_details.dart';
 
 class PatentWidget extends StatelessWidget {
@@ -38,7 +38,7 @@ class PatentButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: getWidth(context)/2.5,
+      width: width(context)/2.5,
       child: OutlineButton(
         child: Text(_patent.substring(0,2)+"•"+_patent.substring(2,4)+'-'+_patent.substring(4,6), style: TextStyle(fontSize: 24, color: Colors.black, ),
         ),
@@ -49,9 +49,9 @@ class PatentButton extends StatelessWidget {
     );
   }
 
-  Widget _browse(String patent, String company, BuildContext context){
-    Navigator.push(context, MaterialPageRoute(
+  void _browse(String patent, String company, BuildContext context){
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
       builder: (context) => AngloDetails(month: 1, patent: patent, company: company),
-    ));
+    ), (route) => false);
   }
 }
