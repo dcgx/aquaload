@@ -1,12 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:waterchapp/src/functions/functions.dart';
+import 'package:waterchapp/src/widgets/helpers.dart';
 import 'package:waterchapp/src/providers/firebase_provider.dart';
-
+import 'package:waterchapp/src/widgets/dialogs.dart';
 
 class FormPage extends StatefulWidget {
   final String uid, patent, company;
@@ -17,62 +17,34 @@ _FormPageState createState() => _FormPageState();
 }
 
 class _FormPageState extends State<FormPage> {
+  // Provider
+  var provider = FirebaseProvider();
+
   final _finalFlowController = TextEditingController();
   final _initialFlowController = TextEditingController();
   final _totalLoadedController = TextEditingController();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = new GlobalKey<FormState>();
-  final db = Firestore.instance;
   File photoFile;
   String _url;
   double _totalLoaded;
   double _finalFlow;
   double _initialFlow;
-  String message;
-  String formattedDate = DateFormat('dd-MM-yyyy - hh:mm a').format(DateTime.now());
+  String formattedDate = DateFormat('dd-MM-yyyy - kk:mm a').format(DateTime.now());
 
-  _openCamera(BuildContext context) async {
-    var  picture= await ImagePicker.pickImage(source: ImageSource.camera, maxWidth: 500);
+  void _openCamera(BuildContext context) async {
+    var picture= await ImagePicker.pickImage(source: ImageSource.camera, maxWidth: 500);
     this.setState((){
       photoFile=picture;
     });
-    Navigator.of(context).pop();
   }
-
-  Future<void> _showChoiceDialog(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Seleccione"),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  child: Column(
-                    children: <Widget>[
-                      Icon(Icons.camera_alt),
-                      Text('Cámara'),
-                    ],
-                  ),
-                  onTap: () {
-                    _openCamera(context);
-                  },
-                )
-              ],
-            ),
-          ),
-        );
-      }
-    );
-  }  
 
   Widget validateImage(){
     if(photoFile==null){
       return Text("No se ha seleccionado una foto");
     }
     else{
-      return Image.file(photoFile,width: getWidth(context)/2, height: getHeight(context)/2);
+      return Image.file(photoFile,width: width(context)/2, height: heigth(context)/2);
     }
   }
 
@@ -88,19 +60,30 @@ class _FormPageState extends State<FormPage> {
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SizedBox(height: 40.0,),
-                  Image(image: AssetImage('assets/images/logo.png',), height: getHeight(context)/14),
-                  Text(widget.company),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(widget.patent.substring(0,2)+"•"+widget.patent.substring(2,4)+'-'+widget.patent.substring(4,6), style: TextStyle(fontSize: 42, fontWeight: FontWeight.w500)),
-                      ],
-                    ),
+                  Divider(height: 40.0,),
+                  // Header
+                  Column(
+                    children: <Widget>[
+                      Image(image: AssetImage('assets/images/logo.png',), height: heigth(context)/14),
+                      Text(widget.company),
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(widget.patent.substring(0,2)+"•"+widget.patent.substring(2,4)+'-'+widget.patent.substring(4,6), style: TextStyle(fontSize: 42, fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
+                  // Fecha formateada
                   Text(formattedDate),
+                  Divider(height: 10,),
+                  
+                  // Text form fields
                   TextFormField(
+                    autofocus: true,
+                    textAlign: TextAlign.center,
                     controller: _initialFlowController,
                     keyboardType: TextInputType.number,
                     validator: (value) {
@@ -112,12 +95,13 @@ class _FormPageState extends State<FormPage> {
                     onSaved: (value) => _initialFlow = double.parse(value),
                     decoration: InputDecoration(
                       labelText: 'Ingrese Datos Contador Inicial',
+                      labelStyle: TextStyle(fontSize: 20),
                       suffix: Text('m3', style: TextStyle(fontSize: 25.0),),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.black)
                       )
                     ),
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
                     onChanged: (value){
                       _initialFlow = double.parse(value);
                       _totalLoaded = _finalFlow-_initialFlow;
@@ -126,10 +110,12 @@ class _FormPageState extends State<FormPage> {
                       );
                     },
                   ),
-                  SizedBox(height: 20.0,),
+                  Divider(height: 20.0,),
+                  
                   TextFormField(
                     controller: _finalFlowController,
                     keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
                     validator: (value) {
                       if(value.isEmpty) {
                         return 'Complete todos los campos';
@@ -139,12 +125,13 @@ class _FormPageState extends State<FormPage> {
                     onSaved: (value) => _finalFlow = double.parse(value),
                     decoration: InputDecoration(
                       labelText: 'Ingrese Datos Contador Final',
+                      labelStyle: TextStyle(fontSize: 20),
                       suffix: Text('m3', style: TextStyle(fontSize: 25.0),),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.black)
                       ),
                     ),
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
                     onChanged: (value){
                       _finalFlow = double.parse(value);
                       _totalLoaded = _finalFlow-_initialFlow;
@@ -152,8 +139,9 @@ class _FormPageState extends State<FormPage> {
                         text: _totalLoaded.toStringAsFixed(2)
                       );
                     },
-                  ),                  
-                  SizedBox(height: getHeight(context)/200,),
+                  ),
+                  Divider(height: heigth(context)/200,),
+                  
                   // Upload photo
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -161,17 +149,47 @@ class _FormPageState extends State<FormPage> {
                       validateImage(),
                       RaisedButton(
                         onPressed: () {
-                          _showChoiceDialog(context);
+                          _openCamera(context);
                         },
-                        child: Text("Agregar foto", style: TextStyle(color: Colors.white),),
+                        child: Column(
+                          children: <Widget>[
+                            Icon(Icons.camera_alt, color: Colors.grey[200],),
+                            Text("Agregar foto", style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),),
+                          ],
+                        )
                       )
                     ],
                   ),
-                  
-                  TextField(
-                    enabled: false,
-                    controller: _totalLoadedController,
+                  Divider(height: 10),
+				  
+                  // Total loaded text field
+                  Container(
+                    height: 70,
+                    child: TextFormField(
+                      controller: _totalLoadedController,
+                      textAlign: TextAlign.center,
+                      enabled: false,
+                      decoration: InputDecoration(
+                        hintText: 'Contador final',
+                        hintStyle: TextStyle(fontSize: 18),
+                        errorStyle: TextStyle(color: Colors.red),
+                        errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                        suffix: Text('m3', style: TextStyle(fontSize: 25.0,)),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)
+                        ),
+                      ),
+                      validator: (value) {
+                        if(double.parse(value)<0) {
+                          return 'El contador no puede ser negativo';
+                        }
+                        return null;
+                      },
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
                   ),
+
+                  // Form buttons
                   Center(
                     child: Row(
                       children: <Widget>[
@@ -198,17 +216,18 @@ class _FormPageState extends State<FormPage> {
                             child: Text('Guardar', style: TextStyle(color: Colors.white),),
                             onPressed: (){
                               final form = _formKey.currentState;
-                              checkConnectivity().then((internet){
+                              Dialogs().checkConnectivity().then((internet){
                                 if(internet!=null && internet){
-                                  if(form.validate() && photoFile!=null){
+                                  if(form.validate()){
                                     form.save();
-                                    _loadingDialog();
+                                    Dialogs().showLoadingDialog(context);
                                     saveToDataBase();
-                                  }else{
-                                    showSnackBar(message: 'Agregar una fotografía', seconds: 1, icon: Icon(Icons.info));
                                   }
+                                  // if (photoFile==null){
+                                  //   showSnackBar(message: 'Agregar una fotografía', seconds: 1, icon: Icon(Icons.info));
+                                  // }
                                 } else {
-                                  showNotConnectionDialog(context);
+                                  Dialogs().showNotConnectionDialog(context);
                                 }
                               });
                             },
@@ -225,12 +244,12 @@ class _FormPageState extends State<FormPage> {
     );
   }
   
-  void _cleanForm(){
-    _initialFlowController.clear();
-    _finalFlowController.clear();
-    _totalLoadedController.clear();
-    photoFile=null;
+  void _cleanForm(){    
     setState(() {
+      _initialFlowController.clear();
+      _finalFlowController.clear();
+      _totalLoadedController.clear();
+      photoFile=null;
       validateImage();
     });
   }
@@ -249,71 +268,48 @@ class _FormPageState extends State<FormPage> {
     _scaffoldKey.currentState.showSnackBar(snackbar);
   }
   
-  void saveToDataBase() async {
+  Future<void> saveToDataBase() async {
     if(_formKey.currentState.validate()){
       _totalLoaded = totalLoaded(_initialFlow, _finalFlow);
-      _url = await uploadPhoto();
+      if(photoFile!=null){
+        _url = await _uploadPhotoAndGetUrl();
+      } else{
+        _url = null;
+      }
       _formKey.currentState.save();
-      db.collection('data').document(widget.patent+DateFormat('ddMMyyhhmma').format(DateTime.now())).setData(
-        {
-          'initialFlow': this._initialFlow,
-          'finalFlow': this._finalFlow,
-          'date': FirebaseProvider().getServerTimestamp(),
-          'totalLoaded': this._totalLoaded,
-          'photoUrl': this._url,
-          'loaded_by': this.widget.patent
-        }
-      ).then((_) => {
+      
+      Map<String, dynamic> data = 
+      {
+        'initialFlow': this._initialFlow,
+        'finalFlow': this._finalFlow,
+        'date': FirebaseProvider().getServerTimestamp(),
+        'totalLoaded': this._totalLoaded,
+        'photoUrl': this._url,
+        'loaded_by': this.widget.patent
+      };
+
+
+      String path = widget.patent+'-'+DateFormat('ddMMyykkmm').format(DateTime.now());
+
+      Firestore.instance.collection('data').document(path).setData(data).then((value){
         setState(() {
           _cleanForm();
           showSnackBar(message: 'Listo!, Datos correctamente guardados', seconds: 2, icon: Icon(Icons.check));
-          Future.delayed(Duration(seconds: 0), (){
-            Navigator.pop(context);
-          });
-        }),
-      }).catchError((error){
-        showSnackBar(message: error.toString(), seconds: 3, icon: Icon(Icons.error));
-      });
-      
-      
+          Navigator.pop(context);
+        });
+      });      
     }
   }
 
-  Future<String> uploadPhoto() async {
-    final StorageReference postPhotoRef = FirebaseStorage.instance.ref().child("photos");
-    var timeKey = DateTime.now();
-    final StorageUploadTask uploadTask = postPhotoRef.child(widget.patent+timeKey.toString() + ".jpg").putFile(photoFile);
-    var imageUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
-    _url = imageUrl.toString();
-    return _url;
+  Future<String> _uploadPhotoAndGetUrl() async{
+    var timeKey = DateTime.now().toString();
+    var patent = widget.patent.toString();
+    String path = patent+timeKey+".jpg";
+    return provider.uploadPhoto(path: path, file: photoFile);
   }
-   
+
   double totalLoaded(double initialFlow, double finalFlow){
     double totalLoaded = finalFlow-initialFlow;
     return totalLoaded;
-  }
-
-  void _loadingDialog() { 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context){
-      return Dialog(
-          child: Container(
-            height: getHeight(context)/8,
-            color: Colors.grey[400],
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(width: getHeight(context)/30,),
-                CircularProgressIndicator(),
-                SizedBox(width: getWidth(context)/30,),
-                Text('Cargando...', style: TextStyle(fontSize: 18*MediaQuery.of(context).textScaleFactor)), 
-              ]
-            ),
-          )
-        );
-      }
-    );
   }
 }

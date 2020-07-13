@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:waterchapp/src/functions/functions.dart';
+import 'package:intl/intl.dart';
+import 'package:waterchapp/src/widgets/helpers.dart';
 import 'package:waterchapp/src/providers/firebase_provider.dart';
-import 'package:waterchapp/src/report/functions.dart';
+import 'package:waterchapp/src/report/generate_pdf.dart';
 import 'package:waterchapp/src/widgets/flows_table.dart';
-import 'package:waterchapp/src/widgets/month_widget.dart';
 
 class SopravalPage extends StatefulWidget {
   final int month;
@@ -16,9 +16,9 @@ class SopravalPage extends StatefulWidget {
 
 class _SopravalPageState extends State<SopravalPage> {
   Stream<QuerySnapshot> _query;
-  
+  String monthValue = getMonth(int.parse(DateFormat('M').format(DateTime.now())));
   void initState(){
-    super.initState();  
+    super.initState();
     var provider =  FirebaseProvider();
     _query = provider.getAllData();
   }
@@ -57,25 +57,24 @@ class _SopravalPageState extends State<SopravalPage> {
   Widget _buildContent(AsyncSnapshot<QuerySnapshot> snapshot){
     return ListView(
       children: <Widget>[
-        Image(image: AssetImage('assets/images/logo.png'), height: getHeight(context)/10),
+        Image(image: AssetImage('assets/images/logo.png'), height: heigth(context)/10),
         Center(
-          // ignore: deprecated_member_use
-          child: Text('Total m3 Transportado', style: Theme.of(context).textTheme.subtitle,),
+          child: Text('Total m3 Transportado', style: TextStyle(fontSize: 20),),
         ),
         Divider(color: Colors.black,),
-        MonthWidget(),
-        Center(
-          // ignore: deprecated_member_use
-          child: Text('Mes: ' + getMonth(widget.month), style: Theme.of(context).textTheme.title,),
-        ),
+        // MonthWidget(),
+        // Center(
+        //   child: Text('Mes: ' + getMonth(widget.month), style: TextStyle(fontSize: 25),),
+        // ),
+        _buildDropdownButton(),
         Divider(color: Colors.black,),
-        FlowsTable(month: widget.month, documents: snapshot.data.documents),
-        SizedBox(height: getHeight(context)/55),
+        FlowsTable(month: getMonthNumber(monthValue), documents: snapshot.data.documents),
+        SizedBox(height: heigth(context)/55),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(
-              width: getWidth(context)/2.5,
+              width: width(context)/2.5,
               child: RaisedButton(
                 child: Text('Salir'),
                 textColor: Colors.white,
@@ -85,19 +84,46 @@ class _SopravalPageState extends State<SopravalPage> {
               ),
             ),
             SizedBox(
-              width: getWidth(context)/2.5,
+              width: width(context)/2.5,
               child: RaisedButton(
                 child: Text('Generar informe'),
                 color: Colors.red[400],
                 textColor: Colors.white,
                 onPressed: (){
-                  return generateSaveShowReport(context: context, month: widget.month, documents: snapshot.data.documents);
+                  return generateSaveShowPdf(context: context, month: getMonthNumber(monthValue), documents: snapshot.data.documents);
                 }
               ),
             ),
           ],
         )
       ],
+    );
+  }
+
+  Widget _buildDropdownButton(){
+    return Center(
+      child: DropdownButton<String>(
+        value: monthValue,
+        icon: Icon(Icons.date_range),
+        iconSize: 25,
+        style: TextStyle(color: Colors.black),
+        underline: Container(
+          height: 2,
+          color: Theme.of(context).primaryColor,
+        ),
+        onChanged: (String newValue) {
+          setState(() {
+            monthValue = newValue;
+          });
+        },
+        items: <String>['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Container(width:90, height:20, child: Text(value, style: TextStyle(fontSize: 16),),),
+          );
+        }).toList(),
+      ),
     );
   }
 }

@@ -1,14 +1,25 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 
 class FirebaseProvider{
 
-  getAllData(){
+  dynamic getAllData(){
     return Firestore.instance.collection('data').snapshots();
   }
 
-  addToDataBase(data){
-    Firestore.instance.collection('data').document().setData(data);
+  dynamic getCredentials(String _password){
+    return Firestore.instance.collection('users').where('password',isEqualTo: _password).getDocuments();
+  }
+
+  dynamic getUserByUid(String uid){
+    return Firestore.instance.collection('users').where('uid',isEqualTo: uid).getDocuments();
+  }
+  
+  dynamic getServerTimestamp(){
+    return FieldValue.serverTimestamp();
   }
 
   double totalMonth({List<DocumentSnapshot> documents, final month, String patent}){
@@ -39,14 +50,6 @@ class FirebaseProvider{
     });
   }
 
-  getCredentials(String _password){
-    return Firestore.instance.collection('users').where('password',isEqualTo: _password).getDocuments();
-  }
-
-  getUserByUid(String uid){
-    return Firestore.instance.collection('users').where('uid',isEqualTo: uid).getDocuments();
-  }
-
 
   List<int> counterPerDay({List<DocumentSnapshot> documents, final month, String patent}){
     return List.generate(31, (int index){
@@ -64,7 +67,31 @@ class FirebaseProvider{
     });
   }
 
-  getServerTimestamp(){
-    return FieldValue.serverTimestamp();
+  Future<String> uploadPhoto({String path, File file}) async{
+    final StorageReference postPhotoRef = FirebaseStorage.instance.ref().child('photos');
+    final StorageUploadTask uploadTask = postPhotoRef.child(path).putFile(file);
+    final StreamSubscription<StorageTaskEvent> streamSubscription = uploadTask.events.listen((event) {
+      print('EVENT ${event.snapshot}');
+    });
+    var _photoUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    streamSubscription.cancel();
+    String url = _photoUrl.toString();
+    return url;
   }
+
+  
+
+  //   Future<String> uploadPhoto() async {
+  //   final StorageReference postPhotoRef = FirebaseStorage.instance.ref().child("photos");
+  //   var timeKey = DateTime.now();
+  //   final StorageUploadTask uploadTask = postPhotoRef.child(widget.patent+timeKey.toString() + ".jpg").putFile(photoFile);
+  //   final StreamSubscription<StorageTaskEvent> streamSubscription = uploadTask.events.listen((event) {
+  //     print('EVENT ${event.snapshot}');
+  //   });
+  //   await uploadTask.onComplete;
+  //   var imageUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+  //   streamSubscription.cancel();
+  //   _url = imageUrl.toString();
+  //   return _url;
+  // }
 }

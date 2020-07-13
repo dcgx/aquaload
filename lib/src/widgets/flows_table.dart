@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waterchapp/src/providers/firebase_provider.dart';
-import 'package:waterchapp/src/widgets/table_row_item.dart';
 
 class FlowsTable extends StatefulWidget {
   final List<DocumentSnapshot> documents;
@@ -22,58 +21,48 @@ class _FlowsTableState extends State<FlowsTable> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Table(
-          border: TableBorder.all(color: Colors.grey, width: 1.0),
-          columnWidths: {0:FractionColumnWidth(.2), 2:FractionColumnWidth(.1), 3:FractionColumnWidth(.2)},
-          children: [
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 1, secColumnIndex: 16),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 2, secColumnIndex: 17),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 3, secColumnIndex: 18),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 4, secColumnIndex: 19),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 5, secColumnIndex: 20),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 6, secColumnIndex: 21),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 7, secColumnIndex: 22),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 8, secColumnIndex: 23),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 9, secColumnIndex: 24),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 10, secColumnIndex: 25),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 11, secColumnIndex: 26),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 12, secColumnIndex: 27),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 13, secColumnIndex: 28),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 14, secColumnIndex: 29),
-            TableRowItem(perDay: widget.perDay, firColumnIndex: 15, secColumnIndex: 30),
-            TableRow(
-              children: [
-                Column(
-                  children: <Widget>[
-                    Text('')
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Text('')
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    SizedBox()
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Text('31', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center)
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Text(widget.perDay[31-1].toStringAsFixed(2), style: TextStyle(fontSize: 15.0), textAlign: TextAlign.right)
-                  ],
-                )
-              ]
-            ),
+        DataTable(
+          dataRowHeight: MediaQuery.of(context).size.height/34,
+          columns: <DataColumn>[
+            DataColumn(label: Text('Día'),),
+            DataColumn(label: Text('m3'),),
+            DataColumn(label: Padding(padding: const EdgeInsets.fromLTRB(1,0,1,0),)),
+            DataColumn(label: Text('Día'),),
+            DataColumn(label: Text('m3'),),
           ],
+          rows: _buildRows()
         ),
         Text('Total por mes: ' + widget.totalMonth.toString())
       ],
     );
+  }
+
+  List<DataRow> _buildRows(){
+    var listDataRow = new List<DataRow>();
+    for(var i=1, j=16; i<=15 && j<=31; i++, j++){
+      listDataRow.add(
+        DataRow(
+          cells: [
+            DataCell(Text(i.toString())),
+            DataCell(Text(widget.perDay[i-1].toString())),
+            DataCell(Padding(padding: const EdgeInsets.fromLTRB(1,0,1,0),)),
+            DataCell(Text(j.toString())),
+            DataCell(Text(widget.perDay[j-1].toString())),
+          ]
+        )
+      );
+    }
+    listDataRow.add(
+      DataRow(
+        cells: [
+          DataCell(Text('')),
+          DataCell(Text('')),
+          DataCell(Padding(padding: const EdgeInsets.fromLTRB(1,0,1,0),)),
+          DataCell(Text('31')),
+          DataCell(Text(widget.perDay[30].toString())),
+        ]
+      )
+    );
+    return listDataRow;
   }
 }
