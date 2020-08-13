@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:waterchapp/src/widgets/helpers.dart';
-import 'package:waterchapp/src/widgets/patent_widget.dart';
+import 'package:aquaload/src/widgets/helpers.dart';
+import 'package:aquaload/src/widgets/patent_widget.dart';
 
 class AngloPage extends StatefulWidget {
   AngloPage({Key key}) : super(key: key);

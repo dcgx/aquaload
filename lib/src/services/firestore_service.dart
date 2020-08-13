@@ -33,7 +33,7 @@ class FirebaseProvider{
                                    .fold(0.0, (a, b) => a + b);
   }
 
-  List<double> totalPerDay({List<DocumentSnapshot> documents, final month, String patent}){
+  List<double> totalsPerDay({List<DocumentSnapshot> documents, final month, String patent}){
     return List.generate(31, (int index){
       if(patent!=null){
         return documents.where((doc) => doc['loaded_by'] == patent.toString())
@@ -51,7 +51,7 @@ class FirebaseProvider{
   }
 
 
-  List<int> counterPerDay({List<DocumentSnapshot> documents, final month, String patent}){
+  List<int> loadsPerDay({List<DocumentSnapshot> documents, final month, String patent}){
     return List.generate(31, (int index){
       if(patent!=null){
         return documents.where((doc) => doc['loaded_by'] == patent.toString())

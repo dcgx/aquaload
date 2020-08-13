@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:waterchapp/src/widgets/helpers.dart';
-import 'package:waterchapp/src/pages/anglo/anglo_details.dart';
+import 'package:aquaload/src/widgets/helpers.dart';
+import 'package:aquaload/src/pages/anglo/anglo_details.dart';
 
 class PatentWidget extends StatelessWidget {
   const PatentWidget({Key key}) : super(key: key);

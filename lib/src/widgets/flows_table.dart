@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:waterchapp/src/providers/firebase_provider.dart';
+import 'package:aquaload/src/services/firestore_service.dart';
 
 class FlowsTable extends StatefulWidget {
   final List<DocumentSnapshot> documents;
-  final List<double> perDay;
+  final List<double> totalsPerDay;
   final double totalMonth;
   final String patent, company;
   final month;
   FlowsTable({Key key, this.documents, this.month, this.patent, this.company}) :     
             totalMonth = FirebaseProvider().totalMonth(documents: documents, month: month, patent: patent),                                        
-            perDay = FirebaseProvider().totalPerDay(documents: documents, month: month, patent: patent),
+            totalsPerDay = FirebaseProvider().totalsPerDay(documents: documents, month: month, patent: patent),
             super(key: key);
   @override
   _FlowsTableState createState() => _FlowsTableState();
@@ -32,7 +32,7 @@ class _FlowsTableState extends State<FlowsTable> {
           ],
           rows: _buildRows()
         ),
-        Text('Total por mes: ' + widget.totalMonth.toString())
+        Text('Total por mes: ' + widget.totalMonth.toStringAsFixed(1))
       ],
     );
   }
@@ -44,10 +44,10 @@ class _FlowsTableState extends State<FlowsTable> {
         DataRow(
           cells: [
             DataCell(Text(i.toString())),
-            DataCell(Text(widget.perDay[i-1].toString())),
+            DataCell(Text(widget.totalsPerDay[i-1].toStringAsFixed(1))),
             DataCell(Padding(padding: const EdgeInsets.fromLTRB(1,0,1,0),)),
             DataCell(Text(j.toString())),
-            DataCell(Text(widget.perDay[j-1].toString())),
+            DataCell(Text(widget.totalsPerDay[j-1].toStringAsFixed(1))),
           ]
         )
       );
@@ -59,7 +59,7 @@ class _FlowsTableState extends State<FlowsTable> {
           DataCell(Text('')),
           DataCell(Padding(padding: const EdgeInsets.fromLTRB(1,0,1,0),)),
           DataCell(Text('31')),
-          DataCell(Text(widget.perDay[30].toString())),
+          DataCell(Text(widget.totalsPerDay[30].toString())),
         ]
       )
     );

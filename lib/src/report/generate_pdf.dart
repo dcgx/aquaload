@@ -6,13 +6,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:printing/printing.dart'; 
-import 'package:waterchapp/src/widgets/helpers.dart';
-import 'package:waterchapp/src/providers/firebase_provider.dart';
-import 'package:waterchapp/src/report/report_viewer_page.dart';
+import 'package:aquaload/src/widgets/helpers.dart';
+import 'package:aquaload/src/services/firestore_service.dart';
+import 'package:aquaload/src/report/report_viewer_page.dart';
 
 Future<File> generateSaveShowPdf({context, List<DocumentSnapshot> documents, var month, String patent, String company}) async {
-  List<double> perDay = patent!=null ? FirebaseProvider().totalPerDay(documents: documents, month: month, patent: patent) : FirebaseProvider().totalPerDay(documents: documents, month: month);
-  List<int> counterPerDay = patent!=null ? FirebaseProvider().counterPerDay(documents: documents, month: month, patent: patent) : FirebaseProvider().counterPerDay(documents: documents, month: month);
+  
+  List<double> totalsPerDay = patent!=null ? FirebaseProvider().totalsPerDay(documents: documents, month: month, patent: patent) : FirebaseProvider().totalsPerDay(documents: documents, month: month);
+  List<int> loadsPerDay = patent!=null ? FirebaseProvider().loadsPerDay(documents: documents, month: month, patent: patent) : FirebaseProvider().loadsPerDay(documents: documents, month: month);
+  
   final pdf = Document();
   const logoProvider =  const material.AssetImage('assets/images/logo.png'); 
   final PdfImage logo = await pdfImageFromImageProvider(pdf: pdf.document, image: logoProvider);
@@ -105,7 +107,7 @@ Future<File> generateSaveShowPdf({context, List<DocumentSnapshot> documents, var
             ),
             Table(
               //columnWidths: {1:FractionColumnWidth(.2)},
-              children: patent!=null ? _loadDataListForAnglo(perDay: perDay, counterPerDay: counterPerDay, patent: patent, company: company, numberMonth: month) : _loadDataListForSopraval(perDay: perDay, counterPerDay: counterPerDay, numberMonth: month),
+              children: patent!=null ? _loadDataListForAnglo(totalsPerDay: totalsPerDay, loadsPerDay: loadsPerDay, patent: patent, company: company, numberMonth: month) : _loadDataListForSopraval(totalsPerDay: totalsPerDay, loadsPerDay: loadsPerDay, numberMonth: month),
             ),
           ]
         );
@@ -136,42 +138,42 @@ void shareReport(String path){
   ShareExtend.share(path, "file");
 }
 
-dynamic _loadDataListForAnglo({List<double> perDay, List<int> counterPerDay, String patent, String company, int numberMonth}){
-  int counter=0;
-  double culumativeTotal=0;
+dynamic _loadDataListForAnglo({List<double> totalsPerDay, List<int> loadsPerDay, String patent, String company, int numberMonth}){
+  int day=0;
+  double cumulativeTotal=0;
   double prevValue=0;
   
-  return perDay.map((day){
-    prevValue = day;
-    culumativeTotal = prevValue + culumativeTotal;
-    counter++;
+  return totalsPerDay.map((totalPerDay){
+    prevValue = totalPerDay;
+    cumulativeTotal = prevValue + cumulativeTotal;
+    day++;
     return TableRow(
       children: [
-        _buildTableRowItem(text: counter.toString()+'-' + getMonth(numberMonth).substring(0,3).toLowerCase(), width: 20),
+        _buildTableRowItem(text: day.toString()+'-' + getMonth(numberMonth).substring(0,3).toLowerCase(), width: 20),
         _buildTableRowItem(text: patent.substring(0,4)+'-'+patent.substring(4,6), width: 24),
         _buildTableRowItem(text: company, width: 26),       
-        _buildTableRowItem(text: counterPerDay[counter-1].toString(), width: 18),
-        _buildTableRowItem(text: day.toString(), width: 25),
-        _buildTableRowItem(text: culumativeTotal.toString(), width: 40),
+        _buildTableRowItem(text: loadsPerDay[day-1].toString(), width: 18),
+        _buildTableRowItem(text: totalPerDay.toStringAsFixed(1), width: 25),
+        _buildTableRowItem(text: cumulativeTotal.toStringAsFixed(1), width: 40),
       ]
     );
   }).toList();
 }
 
-dynamic _loadDataListForSopraval({List<double> perDay, List<int> counterPerDay, int numberMonth}){
-  int counter=0;
-  double culumativeTotal=0;
+dynamic _loadDataListForSopraval({List<double> totalsPerDay, List<int> loadsPerDay, int numberMonth}){
+  int day=0;
+  double cumulativeTotal=0;
   double prevValue=0;
-  return perDay.map((day){
-    prevValue = day;
-    culumativeTotal = prevValue + culumativeTotal;
-    counter++;
+  return totalsPerDay.map((totalPerDay){
+    prevValue = totalPerDay;
+    cumulativeTotal = prevValue + cumulativeTotal;
+    day++;
     return TableRow(
       children: [
-        _buildTableRowItem(text: counter.toString()+'-' + getMonth(numberMonth).substring(0,3).toLowerCase(), width: 20),
-        _buildTableRowItem(text: counterPerDay[counter-1].toString(), width: 15),
-        _buildTableRowItem(text: day.toString(), width: 15),
-        _buildTableRowItem(text: culumativeTotal.toString(), width: 20),
+        _buildTableRowItem(text: day.toString()+'-' + getMonth(numberMonth).substring(0,3).toLowerCase(), width: 20),
+        _buildTableRowItem(text: loadsPerDay[day-1].toString(), width: 15),
+        _buildTableRowItem(text: totalPerDay.toStringAsFixed(1), width: 15),
+        _buildTableRowItem(text: cumulativeTotal.toStringAsFixed(1), width: 20),
       ]
     );
   }).toList();

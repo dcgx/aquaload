@@ -1,8 +1,7 @@
-// CAMBIAR LAS RULES DE LA BASE DE DATOS !!! IMPORTANTE
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waterchapp/src/pages/anglo/anglo_page.dart';
-import 'package:waterchapp/src/pages/home_page.dart';
+import 'package:aquaload/src/pages/anglo/anglo_page.dart';
+import 'package:aquaload/src/pages/home_page.dart';
 
 void main() => runApp(MyApp());
 

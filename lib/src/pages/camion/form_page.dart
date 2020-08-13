@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:waterchapp/src/widgets/helpers.dart';
-import 'package:waterchapp/src/providers/firebase_provider.dart';
-import 'package:waterchapp/src/widgets/dialogs.dart';
+import 'package:aquaload/src/widgets/helpers.dart';
+import 'package:aquaload/src/services/firestore_service.dart';
+import 'package:aquaload/src/widgets/dialogs.dart';
 
 class FormPage extends StatefulWidget {
-  final String uid, patent, company;
-  FormPage({Key key, this.uid, this.patent, this.company}) : super(key: key);
+  final patent, company;
+  FormPage({Key key, this.patent, this.company}) : super(key: key);
 
   @override
 _FormPageState createState() => _FormPageState();

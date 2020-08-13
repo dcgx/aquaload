@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:waterchapp/src/widgets/helpers.dart';
-import 'package:waterchapp/src/providers/firebase_provider.dart';
-import 'package:waterchapp/src/report/generate_pdf.dart';
-import 'package:waterchapp/src/widgets/flows_table.dart';
+import 'package:aquaload/src/widgets/helpers.dart';
+import 'package:aquaload/src/services/firestore_service.dart';
+import 'package:aquaload/src/report/generate_pdf.dart';
+import 'package:aquaload/src/widgets/flows_table.dart';
 
 class SopravalPage extends StatefulWidget {
   final int month;

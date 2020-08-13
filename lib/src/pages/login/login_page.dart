@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:waterchapp/src/widgets/helpers.dart';
-import 'package:waterchapp/src/pages/anglo/anglo_page.dart';
-import 'package:waterchapp/src/pages/camion/form_page.dart';
-import 'package:waterchapp/src/pages/sopraval/sopraval_page.dart';
-import 'package:waterchapp/src/providers/firebase_provider.dart';
-import 'package:waterchapp/src/widgets/dialogs.dart';
+import 'package:aquaload/src/widgets/helpers.dart';
+import 'package:aquaload/src/pages/anglo/anglo_page.dart';
+import 'package:aquaload/src/pages/camion/form_page.dart';
+import 'package:aquaload/src/pages/sopraval/sopraval_page.dart';
+import 'package:aquaload/src/services/firestore_service.dart';
+import 'package:aquaload/src/widgets/dialogs.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -146,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
       if(user['role']=='trucker'){
         loggedIn=false;
         Navigator.push(context, MaterialPageRoute(
-          builder: (context) => FormPage(uid: user['uid'], patent: user['patent'], company: user['company'],)
+          builder: (context) => FormPage(patent: user['patent'], company: user['company'],)
         ));
       } else if(user['role']=='adminAnglo'){
         loggedIn=false;

@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "584295348758",
-    "firebase_url": "https://waterchapp.firebaseio.com",
-    "project_id": "waterchapp",
-    "storage_bucket": "waterchapp.appspot.com"
+    "project_number": "988450840003",
+    "firebase_url": "https://aquaload-mobileapp.firebaseio.com",
+    "project_id": "aquaload-mobileapp",
+    "storage_bucket": "aquaload-mobileapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:584295348758:android:526ca21458636771099337",
+        "mobilesdk_app_id": "1:988450840003:android:5a5e894453907a5a6ef176",
         "android_client_info": {
-          "package_name": "com.afxat.waterchapp"
+          "package_name": "cl.rhelsoft.aquaload"
         }
       },
       "oauth_client": [
         {
-          "client_id": "584295348758-ofgm6ukl0bfftg6pb3chu8oe56mmtit9.apps.googleusercontent.com",
+          "client_id": "988450840003-n7a83jin82tdh29d35sdvnh7lvoegr1r.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDY68CkXvr2vCZUv8A6wxypz8mp_O0Baac"
+          "current_key": "AIzaSyDN_66VZUuOKHUZuZg8BMgxdJ9A7lXzVFg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "584295348758-ofgm6ukl0bfftg6pb3chu8oe56mmtit9.apps.googleusercontent.com",
+              "client_id": "988450840003-n7a83jin82tdh29d35sdvnh7lvoegr1r.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

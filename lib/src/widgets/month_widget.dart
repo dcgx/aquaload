@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:waterchapp/src/widgets/helpers.dart';
-import 'package:waterchapp/src/pages/anglo/anglo_details.dart';
-import 'package:waterchapp/src/pages/sopraval/sopraval_page.dart';
+import 'package:aquaload/src/widgets/helpers.dart';
+import 'package:aquaload/src/pages/anglo/anglo_details.dart';
+import 'package:aquaload/src/pages/sopraval/sopraval_page.dart';
 
 class MonthWidget extends StatelessWidget {
   final String patent, company;

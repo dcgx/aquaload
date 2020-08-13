@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:waterchapp/src/widgets/helpers.dart';
-import 'package:waterchapp/src/pages/login/login_page.dart';
+import 'package:aquaload/src/widgets/helpers.dart';
+import 'package:aquaload/src/pages/login/login_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
